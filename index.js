@@ -59,7 +59,7 @@ app.post("/upload", function (req, res, next) {
       res.send(err);
     } else {
       // SUCCESS, image successfully uploaded
-      res.send("Success, Image uploaded!");
+      res.render("pages/check");
     }
   });
 });

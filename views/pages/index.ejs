@@ -5,14 +5,8 @@
       rel="stylesheet"
       href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"
-    />
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -71,7 +65,7 @@
                       <input
                         type="file"
                         class="h-full w-full opacity-0"
-                        name="upload-file"
+                        name="upload_file"
                       />
                     </div>
                     <span>Message:</span>
@@ -79,7 +73,7 @@
                       <input
                         type="text"
                         class="h-12 px-3 w-full border-gray-200 border rounded focus:outline-none focus:border-gray-300"
-                        name="send-text"
+                        name="title"
                       />
                     </div>
                     <div
@@ -87,7 +81,7 @@
                     >
                       <span>Expires:</span>
                       <span>
-                        <select>
+                        <select name="expire">
                           <option>5 minutes</option>
                           <option>10 minutes</option>
                           <option>1 hour</option>
@@ -99,7 +93,18 @@
                         </select>
                       </span>
                       <span>
-                        <input type="checkbox" />
+                        <input
+                          type="hidden"
+                          name="burnflag"
+                          value="false"
+                          id="burnflag_hidden"
+                        />
+                        <input
+                          type="checkbox"
+                          name="burnflag"
+                          value="true"
+                          id="burnflag_check"
+                        />
                         Burn After Reading
                       </span>
                       <span class="flex items-center"
@@ -123,4 +128,11 @@
       </div>
     </main>
   </body>
+  <script>
+    $("#burnflag_check").click(() => {
+      if ($("#burnflag_check").prop("checked"))
+        $("#burnflag_hidden").attr("disabled", true);
+      else $("#burnflag_hidden").attr("disabled", false);
+    });
+  </script>
 </html>

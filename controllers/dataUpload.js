@@ -20,7 +20,10 @@ const dataUpload = async (req, res) => {
     uri: RandomString(24),
     title: req.body.title,
     password: req.body.password,
-    filename: req.file.filename,
+    filename: req.file ? req.file.filename : "",
+    expire: req.body.expire,
+    burnflag: req.body.burnflag,
+    uploaddate: Date.now(),
   });
   try {
     await data.save();

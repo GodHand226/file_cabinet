@@ -17,6 +17,9 @@ const schema = new mongoose.Schema({
   title: String,
   password: String,
   filename: String,
+  uploaddate: Date,
+  expire: String,
+  burnflag: Boolean,
 });
 
 module.exports = mongoose.model("Uploaded Data", schema);

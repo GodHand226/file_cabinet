@@ -15,9 +15,9 @@
   </head>
   <body>
     <main>
-      <div class="py-20 h-screen bg-gray-300 px-2">
+      <div class="py-20 h-screen bg-gray-800 px-2">
         <div
-          class="max-w-md mx-auto bg-white rounded-lg overflow-hidden md:max-w-lg"
+          class="max-w-md mx-auto bg-gray-300 rounded-lg overflow-hidden md:max-w-lg"
         >
           <div class="md:flex">
             <div class="w-full">
@@ -34,7 +34,7 @@
                   action="upload"
                 >
                   <div class="mb-2">
-                    <span class="text-sm">Password:</span>
+                    <span>Password:</span>
                     <input
                       type="password"
                       class="h-12 px-3 w-full border-gray-200 border rounded focus:outline-none focus:border-gray-300"
@@ -76,12 +76,13 @@
                         name="title"
                       />
                     </div>
-                    <div
-                      class="flex justify-between items-center text-gray-400"
-                    >
+                    <div class="flex justify-between items-center text-black">
                       <span>Expires:</span>
                       <span>
-                        <select name="expire">
+                        <select
+                          name="expire"
+                          class="h-8 px-3 w-full border-gray-200 border rounded focus:outline-none focus:border-gray-300"
+                        >
                           <option>5 minutes</option>
                           <option>10 minutes</option>
                           <option>1 hour</option>

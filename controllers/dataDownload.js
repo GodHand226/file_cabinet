@@ -9,10 +9,7 @@ const dataDownload = async (req, res) => {
     result,
   });
   if (req.body.file) {
-    res.download(
-      "uploads/" + result[0].filename,
-      "downloads/" + result[0].filename
-    );
+    res.download("uploads/" + result[0].filename, result[0].filename);
   } else {
     res.send("meiyo");
   }

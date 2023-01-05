@@ -1,12 +1,20 @@
 const { UserInfo } = require("git");
 
 const DataModel = require("../models/uploaddata");
+const crypto = require("crypto");
+
+const secret = "SecretWorld";
 
 const dataDecrypt = async (req, res) => {
   uri = req.body.uri;
-  password = req.body.password;
+
+  const hash = crypto
+    .createHash("sha256", secret)
+    .update(req.body.password)
+    .digest("hex");
+
   result = await DataModel.find({ uri });
-  if (password == result[0].password) {
+  if (hash == result[0].password) {
     console.log({ burnflag: result[0].burnflag });
     res.render("pages/decrypt", {
       uri: result[0].uri,
@@ -16,7 +24,7 @@ const dataDecrypt = async (req, res) => {
       burnflag: result[0].burnflag,
     });
   } else {
-    res.send("Failed");
+    res.render("pages/password");
   }
 };
 module.exports = {

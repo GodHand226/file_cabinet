@@ -1,6 +1,9 @@
 const { UserInfo } = require("git");
 
 const DataModel = require("../models/uploaddata");
+const crypto = require("crypto");
+
+const secret = "SecretWorld";
 
 const characters =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -16,10 +19,15 @@ function RandomString(length) {
 }
 
 const dataUpload = async (req, res) => {
+  const hash = crypto
+    .createHash("sha256", secret)
+    .update(req.body.password)
+    .digest("hex");
+
   const data = new DataModel({
     uri: RandomString(24),
     title: req.body.title,
-    password: req.body.password,
+    password: hash,
     filename: req.file ? req.file.filename : "",
     expire: req.body.expire,
     burnflag: req.body.burnflag,
@@ -33,7 +41,7 @@ const dataUpload = async (req, res) => {
   res.render("pages/preview", {
     uri: data.uri,
     title: req.body.title,
-    password: req.body.password,
+    password: hash,
     filename: req.file ? req.file.filename : "",
   });
 };

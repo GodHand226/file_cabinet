@@ -6,15 +6,15 @@ const MONTH = DAY * 30;
 const YEAR = DAY * 365;
 
 const expiretime = {
-    "5 minutes":5 * MIN,
-    "10 minutes": 10 * MIN,
-    "1 hour":1 * HOUR,
-    "1 day":1 * DAY,
-    "1 WEEK":1 * WEEK,
-    "1 MONTH":1 * MONTH,
-    "1 YEAR":1 * YEAR,
-}
+  "5 minutes": 5 * MIN,
+  "10 minutes": 10 * MIN,
+  "1 hour": 1 * HOUR,
+  "1 day": 1 * DAY,
+  "1 week": 1 * WEEK,
+  "1 month": 1 * MONTH,
+  "1 year": 1 * YEAR,
+};
 
 module.exports = {
-    expiretime,
-}
+  expiretime,
+};

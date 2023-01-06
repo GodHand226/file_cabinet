@@ -77,7 +77,7 @@ const dataUpload = async (req, res) => {
 
   if (req.file) {
     const ext = path.extname(req.file.originalname);
-    newfilename = RandomString(10) + "-" + Date.now() + "." + ext;
+    newfilename = RandomString(10) + "-" + Date.now() + ext;
     saveEncryptedFile(
       req.file.buffer,
       path.join("uploads/", newfilename),
@@ -94,6 +94,7 @@ const dataUpload = async (req, res) => {
     expire: req.body.expire,
     burnflag: req.body.burnflag,
     uploaddate: Date.now(),
+    visitflag: false,
   });
   try {
     await data.save();

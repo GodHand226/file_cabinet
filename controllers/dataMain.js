@@ -3,7 +3,7 @@ const { UserInfo } = require("git");
 const crypto = require("crypto");
 
 const DataModel = require("../models/uploaddata");
-const expiretime = require("../constant");
+const { expiretime } = require("../constant");
 
 const sec = "SecretWorld";
 
@@ -15,15 +15,20 @@ const dataMain = async (req, res) => {
   else {
     result = await DataModel.find({ uri });
     if (result.length == 0) {
-      res.send("Expired");
+      res.render("pages/expired");
     } else {
       var diff = Date.now() - result[0].uploaddate;
       diff = diff > 0 ? diff : 0;
       diff = diff / 1000;
 
-      if (expiretime[result[0].expire] < diff) result[0].delete();
-      else if (result[0].password != hash) {
-        res.render("pages/password", { uri });
+      if (result[0].burnflag == true && result[0].visitflag == true) {
+        result[0].delete();
+        res.render("pages/expired.ejs");
+      } else if (expiretime[result[0].expire] < diff) {
+        result[0].delete();
+        res.render("pages/expired.ejs");
+      } else if (result[0].password != hash) {
+        res.render("pages/password", { warntext: "", uri });
       } else {
         res.render("pages/decrypt", {
           uri: result[0].uri,
@@ -32,6 +37,8 @@ const dataMain = async (req, res) => {
           expire: result[0].expire,
           burnflag: result[0].burnflag,
         });
+        result[0].visitflag = true;
+        result[0].save();
       }
     }
   }

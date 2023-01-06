@@ -72,9 +72,6 @@ const dataDownload = async (req, res) => {
     );
     res.download("downloads/" + result[0].filename, result[0].filename);
   }
-  if (result[0].burnflag == true) {
-    result[0].delete();
-  }
 };
 module.exports = {
   dataDownload,

@@ -25,8 +25,10 @@ const dataDecrypt = async (req, res) => {
       expire: result[0].expire,
       burnflag: result[0].burnflag,
     });
+    result[0].visitflag = true;
+    result[0].save();
   } else {
-    res.render("pages/password", { warntext: "Retry!", uri });
+    res.render("pages/password", { warntext: "exactly", uri });
   }
 };
 module.exports = {

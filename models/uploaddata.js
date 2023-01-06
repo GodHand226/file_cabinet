@@ -20,6 +20,7 @@ const schema = new mongoose.Schema({
   uploaddate: Date,
   expire: String,
   burnflag: Boolean,
+  visitflag: Boolean,
 });
 
 module.exports = mongoose.model("Uploaded Data", schema);

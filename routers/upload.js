@@ -1,9 +1,23 @@
 const express = require("express");
 const multer = require("multer");
-
+const path = require("path");
+const crypto = require("crypto");
+const fs = require("fs");
 const router = express.Router();
+const stream = require("stream");
 
 const { dataUpload } = require("../controllers/dataUpload");
+
+const CryptoAlgorithm = "aes-256-cbc";
+
+// Obviously keys should not be kept in code, these should be populated with environmental variables or key store
+const secret = {
+  iv: Buffer.from("efb2da92cff888c9c295dc4ee682789c", "hex"),
+  key: Buffer.from(
+    "6245cb9b8dab1c1630bb3283063f963574d612ca6ec60bc8a5d1e07ddd3f7c53",
+    "hex"
+  ),
+};
 
 const characters =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -17,19 +31,25 @@ function RandomString(length) {
 
   return result;
 }
-var storage = multer.diskStorage({
+
+/* const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // Uploads is the Upload_folder_name
     cb(null, "uploads");
   },
   filename: function (req, file, cb) {
-    cb(null, RandomString(10) + "-" + Date.now() + ".jpg");
+    const parts = file.originalname.split(".");
+    const ext = parts.pop();
+    const name = parts.join(".");
+    cb(null, RandomString(10) + "-" + Date.now() + "." + ext);
   },
-});
+}); */
+
+const storage = multer.memoryStorage();
 
 const maxSize = 1 * 1000 * 1000;
 
-var upload = multer({
+const upload = multer({
   storage: storage,
   limits: { fileSize: maxSize },
 

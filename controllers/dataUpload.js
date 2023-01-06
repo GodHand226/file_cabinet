@@ -12,9 +12,9 @@ const characters =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 const secret = {
-  iv: Buffer.from("efb2da92cff888c9c295dc4ee682789c", "hex"),
+  iv: Buffer.from("b7b15651664bbec3a3f96ad8a90c05ab", "hex"),
   key: Buffer.from(
-    "6245cb9b8dab1c1630bb3283063f963574d612ca6ec60bc8a5d1e07ddd3f7c53",
+    "dfebb958a1687ed42bf67166200e6bac5f8b050fc2f6552d0737cefe483d3f1c",
     "hex"
   ),
 };
@@ -73,17 +73,18 @@ const dataUpload = async (req, res) => {
     .createHash("sha256", sec)
     .update(req.body.password)
     .digest("hex");
+  var newfilename;
 
-  const parts = req.file.originalname.split(".");
-  const ext = parts.pop();
-  const name = parts.join(".");
-  const newfilename = RandomString(10) + "-" + Date.now() + "." + ext;
-  saveEncryptedFile(
-    req.file.buffer,
-    path.join("uploads/", newfilename),
-    secret.key,
-    secret.iv
-  );
+  if (req.file) {
+    const ext = path.extname(req.file.originalname);
+    newfilename = RandomString(10) + "-" + Date.now() + "." + ext;
+    saveEncryptedFile(
+      req.file.buffer,
+      path.join("uploads/", newfilename),
+      secret.key,
+      secret.iv
+    );
+  }
 
   const data = new DataModel({
     uri: RandomString(24),

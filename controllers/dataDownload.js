@@ -7,9 +7,9 @@ const stream = require("stream");
 const crypto = require("crypto");
 
 const secret = {
-  iv: Buffer.from("efb2da92cff888c9c295dc4ee682789c", "hex"),
+  iv: Buffer.from("b7b15651664bbec3a3f96ad8a90c05ab", "hex"),
   key: Buffer.from(
-    "6245cb9b8dab1c1630bb3283063f963574d612ca6ec60bc8a5d1e07ddd3f7c53",
+    "dfebb958a1687ed42bf67166200e6bac5f8b050fc2f6552d0737cefe483d3f1c",
     "hex"
   ),
 };
@@ -59,9 +59,11 @@ function saveDecryptedFile(buffer, filePath, key, iv) {
 
 const dataDownload = async (req, res) => {
   uri = req.body.uri;
+  console.log(uri);
   result = await DataModel.find({ uri });
-
-  if (req.body.file) {
+  if (result.length == 0) {
+    res.send("Failed");
+  } else if (req.body.file) {
     saveDecryptedFile(
       fs.readFileSync("uploads/" + result[0].filename),
       path.join("downloads/", result[0].filename),
@@ -69,8 +71,9 @@ const dataDownload = async (req, res) => {
       secret.iv
     );
     res.download("downloads/" + result[0].filename, result[0].filename);
-  } else {
-    res.send("meiyo");
+  }
+  if (result[0].burnflag == true) {
+    result[0].delete();
   }
 };
 module.exports = {

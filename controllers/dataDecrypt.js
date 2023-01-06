@@ -14,8 +14,10 @@ const dataDecrypt = async (req, res) => {
     .digest("hex");
 
   result = await DataModel.find({ uri });
-  if (hash == result[0].password) {
-    console.log({ burnflag: result[0].burnflag });
+
+  if (result.length == 0) {
+    res.send("Expired");
+  } else if (hash == result[0].password) {
     res.render("pages/decrypt", {
       uri: result[0].uri,
       title: result[0].title,

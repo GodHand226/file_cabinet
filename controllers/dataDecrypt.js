@@ -26,7 +26,7 @@ const dataDecrypt = async (req, res) => {
       burnflag: result[0].burnflag,
     });
   } else {
-    res.render("pages/password");
+    res.render("pages/password", { warntext: "Retry!", uri });
   }
 };
 module.exports = {

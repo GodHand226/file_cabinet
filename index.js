@@ -8,6 +8,7 @@ const { dataUpload } = require("./controllers/dataUpload");
 
 const app = express();
 
+app.use("/downloads", express.static(path.join(__dirname, "downloads")));
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({

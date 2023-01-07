@@ -64,12 +64,6 @@ const dataDownload = async (req, res) => {
   if (result.length == 0) {
     res.send("Failed");
   } else if (req.body.file) {
-    saveDecryptedFile(
-      fs.readFileSync("uploads/" + result[0].filename),
-      path.join("downloads/", result[0].filename),
-      secret.key,
-      secret.iv
-    );
     res.download("downloads/" + result[0].filename, result[0].filename);
   }
 };

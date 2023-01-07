@@ -9,7 +9,7 @@ const sec = "SecretWorld";
 
 const dataMain = async (req, res) => {
   const hash = crypto.createHash("sha256", sec).update("").digest("hex");
-
+  const secpass = crypto.createHash("sha256", sec).update(hash).digest("hex");
   uri = Object.keys(req.query)[0];
   if (uri == undefined) res.render("pages/index");
   else {
@@ -21,13 +21,15 @@ const dataMain = async (req, res) => {
       diff = diff > 0 ? diff : 0;
       diff = diff / 1000;
 
-      if (result[0].burnflag == true && result[0].visitflag == true) {
-        result[0].delete();
-        res.render("pages/expired.ejs");
+      if (result[0].burnflag == true) {
+        if (result[0].visitflag == true) {
+          result[0].delete();
+          res.render("pages/expired.ejs");
+        }
       } else if (expiretime[result[0].expire] < diff) {
         result[0].delete();
         res.render("pages/expired.ejs");
-      } else if (result[0].password != hash) {
+      } else if (result[0].password != secpass) {
         res.render("pages/password", { warntext: "", uri });
       } else {
         res.render("pages/decrypt", {

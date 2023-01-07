@@ -66,12 +66,12 @@ const dataDecrypt = async (req, res) => {
     .createHash("sha256", sec)
     .update(req.body.password)
     .digest("hex");
-
+  const secpass = crypto.createHash("sha256", sec).update(hash).digest("hex");
   result = await DataModel.find({ uri });
 
   if (result.length == 0) {
     res.send("Expired");
-  } else if (hash == result[0].password) {
+  } else if (secpass == result[0].password) {
     if (result[0].filename) {
       saveDecryptedFile(
         fs.readFileSync("uploads/" + result[0].filename),

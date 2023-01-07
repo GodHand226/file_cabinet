@@ -59,7 +59,6 @@ function saveDecryptedFile(buffer, filePath, key, iv) {
 
 const dataDownload = async (req, res) => {
   uri = req.body.uri;
-  console.log(uri);
   result = await DataModel.find({ uri });
   if (result.length == 0) {
     res.send("Failed");

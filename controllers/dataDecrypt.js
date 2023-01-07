@@ -80,7 +80,6 @@ const dataDecrypt = async (req, res) => {
         secret.iv
       );
     }
-    console.log(result[0]);
     res.render("pages/decrypt", {
       uri: result[0].uri,
       title: result[0].title,

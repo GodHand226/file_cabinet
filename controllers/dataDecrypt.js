@@ -72,12 +72,14 @@ const dataDecrypt = async (req, res) => {
   if (result.length == 0) {
     res.send("Expired");
   } else if (hash == result[0].password) {
-    saveDecryptedFile(
-      fs.readFileSync("uploads/" + result[0].filename),
-      path.join("downloads/", result[0].filename),
-      secret.key,
-      secret.iv
-    );
+    if (result[0].filename) {
+      saveDecryptedFile(
+        fs.readFileSync("uploads/" + result[0].filename),
+        path.join("downloads/", result[0].filename),
+        secret.key,
+        secret.iv
+      );
+    }
     console.log(result[0]);
     res.render("pages/decrypt", {
       uri: result[0].uri,

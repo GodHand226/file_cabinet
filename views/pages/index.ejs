@@ -11,6 +11,49 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
+    <script>
+      document.onpaste = function (pasteEvent) {
+        // consider the first item (can be easily extended for multiple items)
+        var item = pasteEvent.clipboardData.items[0];
+
+        if (item.type.indexOf("image") === 0) {
+          var blob = item.getAsFile();
+
+          var reader = new FileReader();
+          reader.onload = function (event) {
+            document.getElementById("output").src = event.target.result;
+            output.onload = function () {
+              URL.revokeObjectURL(output.src);
+            };
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+    </script>
+    <script>
+      var loadFile = function (event) {
+        var output = document.getElementById("output");
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function () {
+          URL.revokeObjectURL(output.src);
+        };
+
+        document.getElementById("imgbb").style.backgroundImage =
+          "url(" + output.src + ")";
+      };
+    </script>
+    <style>
+      .ghor {
+        background-image: url("Black-Wallpaper.jpg");
+        background-size: cover;
+        border-radius: 5px;
+        height: 100px;
+        width: 100px;
+        box-shadow: 2px 5px 7px 7px white;
+        background-color: black;
+        display: inline-block;
+      }
+    </style>
     <title>EncryptBin</title>
   </head>
   <body>
@@ -44,7 +87,11 @@
 
                   <div class="mb-2">
                     <span>Attachments:</span>
+                    <div class="justify-center items-center">
+                      <img id="output" width="100px" hidden />
+                    </div>
                     <div
+                      id="imgbb"
                       class="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-gray-300 flex justify-center items-center hover:cursor-pointer"
                     >
                       <div class="absolute">
@@ -66,7 +113,7 @@
                         type="file"
                         class="h-full w-full opacity-0"
                         name="upload_file"
-                        id="upload_file"
+                        onchange="loadFile(event)"
                       />
                     </div>
                     <span>Message:</span>

@@ -13,7 +13,10 @@ const dataDownload = async (req, res) => {
     res.send("Failed");
   } else if (req.body.file) {
     //Downloads image from downloads in server to client
-    res.download("downloads/" + result[0].filename, result[0].filename);
+    res.download(
+      "downloads/" + result[0].originalfilename,
+      result[0].originalfilename
+    );
   }
 };
 module.exports = {

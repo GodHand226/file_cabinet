@@ -24,4 +24,4 @@ const schema = new mongoose.Schema({
   visitflag: Boolean,
 });
 
-module.exports = mongoose.model("Uploaded Data", schema);
+module.exports = mongoose.model("dataStore", schema);

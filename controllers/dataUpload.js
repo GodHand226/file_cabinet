@@ -100,6 +100,7 @@ const dataUpload = async (req, res) => {
     title: req.body.title,
     password: secpass,
     filename: req.file ? newfilename : "",
+    originalfilename: req.file.originalname,
     expire: req.body.expire,
     burnflag: req.body.burnflag,
     uploaddate: Date.now(),
@@ -115,7 +116,6 @@ const dataUpload = async (req, res) => {
     uri: data.uri,
     title: req.body.title,
     password: secpass,
-    filename: req.file ? newfilename : "",
   });
 };
 module.exports = {

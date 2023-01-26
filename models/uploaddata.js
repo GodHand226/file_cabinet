@@ -17,7 +17,7 @@ const schema = new mongoose.Schema({
   title: String,
   password: String,
   filename: String,
-  originalfilename: String,
+  originalname: String,
   uploaddate: Date,
   expire: String,
   burnflag: Boolean,

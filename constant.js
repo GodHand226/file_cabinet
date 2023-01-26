@@ -5,7 +5,7 @@ const WEEK = DAY * 7;
 const MONTH = DAY * 30;
 const YEAR = DAY * 365;
 
-const secret_key = "adshfklawjebrklasdyhfkzsbdrfiweuryhsldjkfh";
+const secret_key = "d1a3b9fe4c3f9aa4b0fb5be8e08809b2";
 
 const expiretime = {
   "5 minutes": 5 * MIN,

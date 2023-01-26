@@ -3,10 +3,10 @@ const fs = require("fs");
 const path = require("path");
 const stream = require("stream");
 const crypto = require("crypto");
-
+const { secret_key } = require("../constant");
 const DataModel = require("../models/uploaddata");
 
-const sec = "SecretWorld";
+const sec = secret_key;
 //Secret Key used in File Decrypt
 const secret = {
   iv: Buffer.from("b7b15651664bbec3a3f96ad8a90c05ab", "hex"),

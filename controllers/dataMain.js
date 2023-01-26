@@ -4,9 +4,10 @@ const crypto = require("crypto");
 
 const DataModel = require("../models/uploaddata");
 const { expiretime } = require("../constant");
+const { secret_key } = require("../constant");
 const { MONTH } = require("../constant");
 //hash key
-const sec = "SecretWorld";
+const sec = secret_key;
 
 const checkDatabase = async () => {
   database = await DataModel.find();

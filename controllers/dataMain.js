@@ -73,10 +73,14 @@ const checkDatabase = async () => {
     if (data.burnflag == true) {
       if (data.visitflag == true || diff > MONTH) {
         //Burn if once visited
+        fs.unlinkSync("uploads/" + data.filename);
+        fs.unlinkSync("downloads/" + data.filename);
         data.delete();
       }
     } else if (expiretime[data.expire] < diff) {
       //expire time is over
+      fs.unlinkSync("uploads/" + data.filename);
+      fs.unlinkSync("downloads/" + data.filename);
       data.delete();
     }
   });

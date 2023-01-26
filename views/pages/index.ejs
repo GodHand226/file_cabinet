@@ -72,6 +72,7 @@
                     <span>Password:</span>
                     <input
                       type="password"
+                      placeholder="Type a password here"
                       class="h-12 px-3 w-full border-gray-200 border rounded focus:outline-none focus:border-gray-300 bg-gray-300"
                       name="password"
                     />
@@ -113,16 +114,18 @@
                     <div>
                       <input
                         type="text"
+                        placeholder="Type a message here"
                         class="h-12 px-3 w-full border-gray-200 border rounded focus:outline-none focus:border-gray-300 bg-gray-300"
                         name="title"
                       />
                     </div>
-                    <div class="flex justify-between items-center text-black">
-                      <span>Expires:</span>
-                      <span>
-                        <select
+                    <div
+                      class="flex justify-between items-center text-black mt-1"
+                    >
+                      <span
+                        >Expires:<select
                           name="expire"
-                          class="h-8 px-3 w-full border-gray-200 border rounded focus:outline-none focus:border-gray-300 bg-gray-300"
+                          class="h-8 px-3 border-gray-200 border rounded focus:outline-none focus:border-gray-300 bg-gray-300 ml-3"
                         >
                           <option>5 minutes</option>
                           <option>10 minutes</option>
@@ -132,8 +135,8 @@
                           <option>1 month</option>
                           <option>1 year</option>
                           <option>Never</option>
-                        </select>
-                      </span>
+                        </select></span
+                      >
                       <span>
                         <input
                           type="hidden"

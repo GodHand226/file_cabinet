@@ -125,12 +125,14 @@ const dataMain = async (req, res) => {
 
       if (result[0].filename) {
         //if password is correct and file exists, decrypt file and save it to 'downloads' folder in server
-        saveDecryptedFile(
-          fs.readFileSync("uploads/" + result[0].filename),
-          path.join("downloads/", result[0].filename),
-          secret.key,
-          secret.iv
-        );
+        for (var i = 0; i < result[0].filename.length; i++) {
+          saveDecryptedFile(
+            fs.readFileSync("uploads/" + result[0].filename[i]),
+            path.join("downloads/", result[0].filename[i]),
+            secret.key,
+            secret.iv
+          );
+        }
       }
       res.render("pages/decrypt", {
         uri: result[0].uri,

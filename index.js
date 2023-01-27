@@ -9,6 +9,7 @@ const { dataUpload } = require("./controllers/dataUpload");
 const app = express();
 //Add path for downloaded Image Preview
 app.use("/downloads", express.static(path.join(__dirname, "downloads")));
+app.use("/statics", express.static(path.join(__dirname, "statics")));
 
 app.use(bodyParser.json());
 app.use(

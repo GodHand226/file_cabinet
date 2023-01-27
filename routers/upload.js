@@ -17,8 +17,12 @@ const upload = multer({
   limits: { fileSize: maxSize },
 
   // mypic is the name of file attribute
-}).single("upload_file");
-
-router.post("/", upload, dataUpload);
+});
+// .array("upload_file")
+router.post(
+  "/",
+  upload.fields([{ name: "upload_file", maxCount: 10 }]),
+  dataUpload
+);
 
 module.exports = router;

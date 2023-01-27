@@ -82,25 +82,30 @@ const dataUpload = async (req, res) => {
   //secpass is Twice hased string
   const secpass = crypto.createHash("sha256", sec).update(hash).digest("hex");
   var newfilename;
-
-  if (req.file) {
-    const ext = path.extname(req.file.originalname);
-    newfilename = RandomString(10) + "-" + Date.now() + ext;
-    //save encrypted file with encrypted filename
-    saveEncryptedFile(
-      req.file.buffer,
-      path.join("uploads/", newfilename),
-      secret.key,
-      secret.iv
-    );
+  var newfilenames = [];
+  var originalnames = [];
+  if (req.files.upload_file) {
+    filenames = req.files.upload_file.map((item) => {
+      const ext = path.extname(item.originalname);
+      newfilename = RandomString(10) + "-" + Date.now() + ext;
+      //save encrypted file with encrypted filename
+      saveEncryptedFile(
+        item.buffer,
+        path.join("uploads/", newfilename),
+        secret.key,
+        secret.iv
+      );
+      return newfilename;
+    });
+    originalnames = req.files.upload_file.map((item) => item.originalname);
   }
 
   const data = new DataModel({
     uri: RandomString(24),
     title: req.body.title,
     password: secpass,
-    filename: req.file ? newfilename : "",
-    originalname: req.file ? req.file.originalname : "",
+    filename: req.files == [] ? [] : filenames,
+    originalname: req.originalnames == [] ? [] : originalnames,
     expire: req.body.expire,
     burnflag: req.body.burnflag,
     uploaddate: Date.now(),

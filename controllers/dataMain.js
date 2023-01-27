@@ -65,34 +65,43 @@ function saveDecryptedFile(buffer, filePath, key, iv) {
 
 const checkDatabase = async () => {
   database = await DataModel.find();
-  database.map((data) => {
-    var diff = Date.now() - data.uploaddate;
-    diff = diff > 0 ? diff : 0;
-    diff = diff / 1000;
-
-    if (data.burnflag == true) {
-      if (data.visitflag == true || diff > MONTH) {
-        //Burn if once visited
-        fs.unlinkSync("uploads/" + data.filename);
-        fs.unlinkSync("downloads/" + data.filename);
-        data.delete();
+  await Promise.all(
+    database.map(async (data, index) => {
+      var diff = Date.now() - data.uploaddate;
+      diff = diff > 0 ? diff : 0;
+      diff = diff / 1000;
+      if (data.burnflag == true) {
+        if (data.visitflag == true || diff > MONTH) {
+          //Burn if once visited
+          if (data.filename) {
+            if (fs.existsSync("uploads/" + data.filename))
+              fs.unlinkSync("uploads/" + data.filename);
+            if (fs.existsSync("downloads/" + data.filename))
+              fs.unlinkSync("downloads/" + data.filename);
+          }
+          await DataModel.findByIdAndDelete(data._id);
+        }
+      } else if (expiretime[data.expire] < diff) {
+        //expire time is over
+        if (data.filename) {
+          if (fs.existsSync("uploads/" + data.filename))
+            fs.unlinkSync("uploads/" + data.filename);
+          if (fs.existsSync("downloads/" + data.filename))
+            fs.unlinkSync("downloads/" + data.filename);
+        }
+        await DataModel.findByIdAndDelete(data._id);
       }
-    } else if (expiretime[data.expire] < diff) {
-      //expire time is over
-      fs.unlinkSync("uploads/" + data.filename);
-      fs.unlinkSync("downloads/" + data.filename);
-      data.delete();
-    }
-  });
+    })
+  );
 };
 
 const dataMain = async (req, res) => {
   //hash is once, and secpass is twice hased string with space
   const hash = crypto.createHash("sha256", sec).update("").digest("hex");
   const secpass = crypto.createHash("sha256", sec).update(hash).digest("hex");
-
   uri = Object.keys(req.query)[0];
-  checkDatabase();
+  await checkDatabase();
+
   if (uri == undefined) {
     //Not existing params
     res.render("pages/index");
@@ -103,11 +112,8 @@ const dataMain = async (req, res) => {
       res.render("pages/expired");
     } else {
       //Calculate expire time
-      var diff = Date.now() - result[0].uploaddate;
-      diff = diff > 0 ? diff : 0;
-      diff = diff / 1000;
 
-      if (result[0].burnflag && result[0].visitflag) {
+      if (result[0].burnflag && (result[0].visitflag || diff > MONTH)) {
         //Burn if once visited
         result[0].delete();
         return res.render("pages/expired.ejs");

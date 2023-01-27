@@ -3,10 +3,10 @@ const fs = require("fs");
 const path = require("path");
 const stream = require("stream");
 const crypto = require("crypto");
-
+const { secret_key } = require("../constant");
 const DataModel = require("../models/uploaddata");
 
-const sec = "SecretWorld";
+const sec = secret_key;
 //Secret Key used in File Decrypt
 const secret = {
   iv: Buffer.from("b7b15651664bbec3a3f96ad8a90c05ab", "hex"),
@@ -80,7 +80,7 @@ const dataDecrypt = async (req, res) => {
       //if password is correct and file exists, decrypt file and save it to 'downloads' folder in server
       saveDecryptedFile(
         fs.readFileSync("uploads/" + result[0].filename),
-        path.join("downloads/", result[0].originalfilename),
+        path.join("downloads/", result[0].filename),
         secret.key,
         secret.iv
       );
@@ -89,7 +89,7 @@ const dataDecrypt = async (req, res) => {
       uri: result[0].uri,
       title: result[0].title,
       filename: result[0].filename,
-      originalfilename: result[0].originalfilename,
+      originalname: result[0].originalname,
       expire: result[0].expire,
       burnflag: result[0].burnflag,
     });

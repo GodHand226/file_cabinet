@@ -1,0 +1,73 @@
+.wrapper {
+  margin: 0 1rem;
+  max-width: 100%;
+  margin: auto;
+}
+.horizontal-slider {
+  margin: auto;
+  width: 90%;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  color: white;
+  scroll-behavior: smooth;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.active {
+  scroll-snap-type: none;
+}
+.horizontal-slider::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+
+.carousel-control-prev {
+  width: 5%;
+}
+
+.carousel-control-next {
+  width: 5%;
+}
+
+.cards {
+  margin-left: 0.5rem;
+  height: 90%;
+  scroll-snap-align: start;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.cards img {
+  width: 150px;
+}
+img {
+  max-width: unset !important;
+}
+
+.hor-scroll .btn {
+  position: absolute;
+
+  top: 185px;
+  transform: translateY(-50%);
+
+  height: 30px;
+  width: 30px;
+
+  border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0.5);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+
+  z-index: 1;
+}
+
+.imageView {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}

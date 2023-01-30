@@ -37,13 +37,18 @@
     <script>
       var loadFile = function (event) {
         var output = document.getElementById("output");
-        output.src = URL.createObjectURL(event.target.files[0]);
+        loadedFile = event.target.files;
+        output.src = URL.createObjectURL(loadedFile[0]);
         output.onload = function () {
           URL.revokeObjectURL(output.src);
         };
 
         document.getElementById("imgbb").style.backgroundImage =
           "url(" + output.src + ")";
+        $("#attach").html("");
+        $("#filelist ul").html("");
+        for (var i = 0; i < loadedFile.length; i++)
+          $("#filelist ul").append("<li>" + loadedFile[i].name + "</li>");
       };
     </script>
     <title>EncryptBin</title>
@@ -87,7 +92,14 @@
                       id="imgbb"
                       class="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-gray-300 flex justify-center items-center hover:cursor-pointer"
                     >
-                      <div class="absolute">
+                      <div
+                        id="filelist"
+                        class="m-2 h-full w-32 flex justify-center items-center"
+                        style="top: 0; left: 0"
+                      >
+                        <ul></ul>
+                      </div>
+                      <div class="absolute" id="attach">
                         <div class="flex flex-col items-center">
                           <i class="fa fa-cloud-upload fa-3x text-gray-200"></i>
                           <span class="block text-gray-400 font-normal"

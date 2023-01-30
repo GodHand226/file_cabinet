@@ -5,52 +5,11 @@
       rel="stylesheet"
       href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
-    <script>
-      document.onpaste = function (pasteEvent) {
-        // consider the first item (can be easily extended for multiple items)
-        var item = pasteEvent.clipboardData.items[0];
-
-        if (item.kind == "file") {
-          var blob = item.getAsFile();
-
-          const paste = document.querySelector("#upload_file");
-          let container = new DataTransfer();
-          container.items.add(blob);
-          paste.files = container.files;
-
-          var reader = new FileReader();
-          reader.onload = function (event) {
-            document.getElementById("imgbb").style.backgroundImage =
-              "url(" + event.target.result + ")";
-          };
-
-          reader.readAsDataURL(blob);
-        }
-      };
-    </script>
-    <script>
-      var loadFile = function (event) {
-        var output = document.getElementById("output");
-        loadedFile = event.target.files;
-        output.src = URL.createObjectURL(loadedFile[0]);
-        output.onload = function () {
-          URL.revokeObjectURL(output.src);
-        };
-
-        document.getElementById("imgbb").style.backgroundImage =
-          "url(" + output.src + ")";
-        $("#attach").html("");
-        $("#filelist ul").html("");
-        for (var i = 0; i < loadedFile.length; i++)
-          $("#filelist ul").append("<li>" + loadedFile[i].name + "</li>");
-      };
-    </script>
+    <link rel="stylesheet" href="statics/index.css" />
     <title>EncryptBin</title>
   </head>
   <body>
@@ -92,11 +51,7 @@
                       id="imgbb"
                       class="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-gray-300 flex justify-center items-center hover:cursor-pointer"
                     >
-                      <div
-                        id="filelist"
-                        class="m-2 h-full w-32 absolute"
-                        style="top: 0; left: 0"
-                      >
+                      <div id="filelist" class="h-full" style="display: none">
                         <ul></ul>
                       </div>
                       <div class="absolute" id="attach">
@@ -182,11 +137,61 @@
       </div>
     </main>
   </body>
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script>
     $("#burnflag_check").click(() => {
       if ($("#burnflag_check").prop("checked"))
         $("#burnflag_hidden").attr("disabled", true);
       else $("#burnflag_hidden").attr("disabled", false);
+    });
+  </script>
+  <script>
+    document.onpaste = function (pasteEvent) {
+      // consider the first item (can be easily extended for multiple items)
+      var item = pasteEvent.clipboardData.items[0];
+
+      if (item.kind == "file") {
+        var blob = item.getAsFile();
+
+        const paste = document.querySelector("#upload_file");
+        let container = new DataTransfer();
+        container.items.add(blob);
+        paste.files = container.files;
+
+        var reader = new FileReader();
+        reader.onload = function (event) {
+          document.getElementById("imgbb").style.backgroundImage =
+            "url(" + event.target.result + ")";
+        };
+
+        reader.readAsDataURL(blob);
+      }
+    };
+  </script>
+  <script>
+    var loadFile = function (event) {
+      var output = document.getElementById("output");
+      loadedFile = event.target.files;
+      output.src = URL.createObjectURL(loadedFile[0]);
+      output.onload = function () {
+        URL.revokeObjectURL(output.src);
+      };
+
+      document.getElementById("imgbb").style.backgroundImage =
+        "url(" + output.src + ")";
+      $("#filelist").show();
+      $("#upload_file").hide();
+      $("#imgbb").removeClass("flex");
+      $("#attach").html("");
+      $("#filelist ul").html("");
+      for (var i = 0; i < loadedFile.length; i++)
+        $("#filelist ul").append("<li>" + loadedFile[i].name + "</li>");
+    };
+    $(document).ready(() => {
+      $("#filelist").click(() => {
+        $("#upload_file").click();
+      });
     });
   </script>
 </html>

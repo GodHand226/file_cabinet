@@ -2,7 +2,7 @@ const { UserInfo } = require("git");
 
 const DataModel = require("../models/uploaddata");
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs-extra");
 const stream = require("stream");
 const crypto = require("crypto");
 
@@ -75,6 +75,21 @@ function saveDecryptedFile(buffer, filePath, key, iv) {
 
 const dataUpload = async (req, res) => {
   //hash is Once hased string
+  req.pipe(req.busboy);
+  req.busboy.on("file", (fieldname, file, filename) => {
+    console.log(`Upload of '${filename}' started`);
+
+    // Create a write stream of the new file
+    const fstream = fs.createWriteStream(path.join(uploadPath, filename));
+    // Pipe it trough
+    file.pipe(fstream);
+
+    // On finish of the upload
+    fstream.on("close", () => {
+      console.log(`Upload of '${filename}' finished`);
+      res.redirect("back");
+    });
+  });
   const hash = crypto
     .createHash("sha256", sec)
     .update(req.body.password)

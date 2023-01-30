@@ -10,7 +10,7 @@ const { dataUpload } = require("../controllers/dataUpload");
 
 const storage = multer.memoryStorage();
 
-const maxSize = 1 * 1000 * 1000;
+const maxSize = 1 * 100000 * 100000;
 
 const upload = multer({
   storage: storage,

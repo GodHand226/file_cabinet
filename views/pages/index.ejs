@@ -30,6 +30,7 @@
                 <form
                   method="post"
                   enctype="multipart/form-data"
+                  id="upload-form"
                   action="upload"
                 >
                   <div class="mb-2">
@@ -129,6 +130,10 @@
                       class="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700"
                     />
                   </div>
+                  <div class="progress2 progress-moved">
+                    <div class="progress-bar2" style="width: 0"></div>
+                    <div id="percentage" class="loader"></div>
+                  </div>
                 </form>
               </div>
             </div>
@@ -163,6 +168,7 @@
         reader.onload = function (event) {
           document.getElementById("imgbb").style.backgroundImage =
             "url(" + event.target.result + ")";
+          document.getElementById("imgbb").style.backgroundSize = "100% 100%";
         };
 
         reader.readAsDataURL(blob);
@@ -178,8 +184,11 @@
         URL.revokeObjectURL(output.src);
       };
 
-      document.getElementById("imgbb").style.backgroundImage =
-        "url(" + output.src + ")";
+      if (loadedFile.length == 1) {
+        document.getElementById("imgbb").style.backgroundImage =
+          "url(" + output.src + ")";
+        document.getElementById("imgbb").style.backgroundSize = "100% 100%";
+      } else document.getElementById("imgbb").style.backgroundImage = "url()";
       $("#filelist").show();
       $("#upload_file").hide();
       $("#imgbb").removeClass("flex");
@@ -193,5 +202,41 @@
         $("#upload_file").click();
       });
     });
+  </script>
+  <script>
+    $("#upload-form").submit((e) => {
+      // e.preventDefault();
+      const formValues = $("#upload-form").serializeArray();
+
+      var files = document.getElementById("upload_file").files;
+      var formdata = new FormData();
+
+      for (var index = 0; index < files.length; index++) {
+        formdata.append("upload_file", files[index]);
+      }
+
+      formValues.map((data) => {
+        formdata.append(data.name, data.value);
+      });
+
+      var ajax = new XMLHttpRequest();
+      ajax.upload.addEventListener("progress", progressHandler, false);
+      ajax.addEventListener("load", completeHandler, false);
+      // ajax.addEventListener("error", errorHandler, false);
+      // ajax.addEventListener("abort", abortHandler, false);
+      ajax.open("POST", "/upload");
+      ajax.send(formdata);
+    });
+
+    function progressHandler(event) {
+      var percent = (event.loaded / event.total) * 100;
+      console.log(percent);
+      $(".progress-bar2").width(`${Math.round(percent)}%`);
+      $("#percentage").text(`${Math.round(percent)}%`);
+    }
+
+    function completeHandler(event) {
+      $(".progress-bar2").width(0);
+    }
   </script>
 </html>

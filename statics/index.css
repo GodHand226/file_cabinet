@@ -38,3 +38,37 @@
   width: 100%;
   overflow-y: auto;
 }
+
+.container {
+  margin: 100px auto;
+  margin-top: 220px;
+  width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.progress2 {
+  position: relative;
+  border-radius: 30px;
+  background-color: #fff;
+}
+
+.progress-bar2 {
+  height: 18px;
+  border-radius: 30px;
+  transition: 0.4s linear;
+}
+
+.progress-moved .progress-bar2 {
+  background-color: #f3c623;
+}
+
+.loader {
+  width: 50px;
+  top: 0;
+  left: calc(50% - 25px);
+  line-height: 18px;
+  text-align: center;
+  position: absolute;
+  color: rgba(31, 41, 55, var(--tw-bg-opacity));
+}

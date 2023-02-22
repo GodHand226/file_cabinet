@@ -1,51 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="/statics/tailwind.min.css" />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      href="/statics/font-awesome-4.7.0/css/font-awesome.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <script>
-      document.onpaste = function (pasteEvent) {
-        // consider the first item (can be easily extended for multiple items)
-        var item = pasteEvent.clipboardData.items[0];
-
-        if (item.kind == "file") {
-          var blob = item.getAsFile();
-
-          const paste = document.querySelector("#upload_file");
-          let container = new DataTransfer();
-          container.items.add(blob);
-          paste.files = container.files;
-
-          var reader = new FileReader();
-          reader.onload = function (event) {
-            document.getElementById("imgbb").style.backgroundImage =
-              "url(" + event.target.result + ")";
-          };
-
-          reader.readAsDataURL(blob);
-        }
-      };
-    </script>
-    <script>
-      var loadFile = function (event) {
-        var output = document.getElementById("output");
-        output.src = URL.createObjectURL(event.target.files[0]);
-        output.onload = function () {
-          URL.revokeObjectURL(output.src);
-        };
-
-        document.getElementById("imgbb").style.backgroundImage =
-          "url(" + output.src + ")";
-      };
-    </script>
+    <link rel="stylesheet" href="/statics/index.css" />
+    <link rel="stylesheet" href="/statics/loader.css" />
     <title>EncryptBin</title>
   </head>
   <body>
@@ -66,6 +28,7 @@
                 <form
                   method="post"
                   enctype="multipart/form-data"
+                  id="upload-form"
                   action="upload"
                 >
                   <div class="mb-2">
@@ -87,7 +50,10 @@
                       id="imgbb"
                       class="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-gray-300 flex justify-center items-center hover:cursor-pointer"
                     >
-                      <div class="absolute">
+                      <div id="filelist" class="h-full" style="display: none">
+                        <ul></ul>
+                      </div>
+                      <div class="absolute" id="attach">
                         <div class="flex flex-col items-center">
                           <i class="fa fa-cloud-upload fa-3x text-gray-200"></i>
                           <span class="block text-gray-400 font-normal"
@@ -108,6 +74,7 @@
                         name="upload_file"
                         id="upload_file"
                         onchange="loadFile(event)"
+                        multiple
                       />
                     </div>
                     <span>Message:</span>
@@ -161,6 +128,11 @@
                       class="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700"
                     />
                   </div>
+                  <!-- <div class="progress2 progress-moved">
+                    <div class="progress-bar2" style="width: 0"></div>
+                    <div id="percentage" class="loader"></div>
+                  </div> -->
+                  <div class="loader" style="display: none"></div>
                 </form>
               </div>
             </div>
@@ -169,11 +141,103 @@
       </div>
     </main>
   </body>
+  <script src="/statics/alpine.min.js"></script>
+  <script src="/statics/jquery.min.js"></script>
   <script>
     $("#burnflag_check").click(() => {
       if ($("#burnflag_check").prop("checked"))
         $("#burnflag_hidden").attr("disabled", true);
       else $("#burnflag_hidden").attr("disabled", false);
     });
+  </script>
+  <script>
+    document.onpaste = function (pasteEvent) {
+      // consider the first item (can be easily extended for multiple items)
+      var item = pasteEvent.clipboardData.items[0];
+
+      if (item.kind == "file") {
+        var blob = item.getAsFile();
+
+        const paste = document.querySelector("#upload_file");
+        let container = new DataTransfer();
+        container.items.add(blob);
+        paste.files = container.files;
+
+        var reader = new FileReader();
+        reader.onload = function (event) {
+          document.getElementById("imgbb").style.backgroundImage =
+            "url(" + event.target.result + ")";
+          document.getElementById("imgbb").style.backgroundSize = "100% 100%";
+        };
+
+        reader.readAsDataURL(blob);
+      }
+    };
+  </script>
+  <script>
+    var loadFile = function (event) {
+      var output = document.getElementById("output");
+      loadedFile = event.target.files;
+      output.src = URL.createObjectURL(loadedFile[0]);
+      output.onload = function () {
+        URL.revokeObjectURL(output.src);
+      };
+
+      if (loadedFile.length == 1) {
+        document.getElementById("imgbb").style.backgroundImage =
+          "url(" + output.src + ")";
+        document.getElementById("imgbb").style.backgroundSize = "100% 100%";
+      } else document.getElementById("imgbb").style.backgroundImage = "url()";
+      $("#filelist").show();
+      $("#upload_file").hide();
+      $("#imgbb").removeClass("flex");
+      $("#attach").html("");
+      $("#filelist ul").html("");
+      for (var i = 0; i < loadedFile.length; i++)
+        $("#filelist ul").append("<li>" + loadedFile[i].name + "</li>");
+    };
+    $(document).ready(() => {
+      $("#filelist").click(() => {
+        $("#upload_file").click();
+      });
+    });
+  </script>
+  <script>
+    $("#upload-form").submit((e) => {
+      // e.preventDefault();
+      // const formValues = $("#upload-form").serializeArray();
+
+      // var files = document.getElementById("upload_file").files;
+      // var formdata = new FormData();
+
+      // for (var index = 0; index < files.length; index++) {
+      //   formdata.append("upload_file", files[index]);
+      // }
+
+      // formValues.map((data) => {
+      //   formdata.append(data.name, data.value);
+      // });
+
+      // var ajax = new XMLHttpRequest();
+      // ajax.upload.addEventListener("progress", progressHandler, false);
+      // ajax.addEventListener("load", completeHandler, false);
+      // // ajax.addEventListener("error", errorHandler, false);
+      // // ajax.addEventListener("abort", abortHandler, false);
+      // ajax.open("POST", "/upload");
+      // ajax.send(formdata);
+
+      $(".loader").show();
+    });
+
+    function progressHandler(event) {
+      var percent = (event.loaded / event.total) * 100;
+      console.log(percent);
+      $(".progress-bar2").width(`${Math.round(percent)}%`);
+      $("#percentage").text(`${Math.round(percent)}%`);
+    }
+
+    function completeHandler(event) {
+      $(".progress-bar2").width("100%");
+    }
   </script>
 </html>

@@ -12,87 +12,67 @@ const { MONTH } = require("../constant");
 const sec = secret_key;
 //Secret Key used in File Decrypt
 const secret = {
-  iv: Buffer.from("b7b15651664bbec3a3f96ad8a90c05ab", "hex"),
+  iv: Buffer.from("8e800da9971a12010e738df5fdfe0bb7", "hex"),
   key: Buffer.from(
     "dfebb958a1687ed42bf67166200e6bac5f8b050fc2f6552d0737cefe483d3f1c",
     "hex"
   ),
 };
 
-const CryptoAlgorithm = "aes-256-cbc";
-//Generate encrypt variable
-function encrypt(algorithm, buffer, key, iv) {
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
-  const encrypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
-  return encrypted;
-}
-//Generate decrypt variable
-function decrypt(algorithm, buffer, key, iv) {
-  const decipher = crypto.createDecipheriv(algorithm, key, iv);
-  const decrypted = Buffer.concat([decipher.update(buffer), decipher.final()]);
-  return decrypted;
-}
-//Generate encrypted filepath
-function getEncryptedFilePath(filePath) {
-  return path.join(
-    path.dirname(filePath),
-    path.basename(filePath, path.extname(filePath)) + path.extname(filePath)
+const decrypt = (src, dest) => {
+  const initVect = crypto.randomBytes(16);
+  const decipher = crypto.createDecipheriv(
+    "aes-256-cbc",
+    secret.key,
+    secret.iv
   );
-}
-//Encrypt File and save it to encrypted filePath
-function saveEncryptedFile(buffer, filePath, key, iv) {
-  const encrypted = encrypt(CryptoAlgorithm, buffer, key, iv);
-
-  filePath = getEncryptedFilePath(filePath);
-  if (!fs.existsSync(path.dirname(filePath))) {
-    fs.mkdirSync(path.dirname(filePath));
-  }
-
-  fs.writeFileSync(filePath, encrypted);
-}
-
-//Decrypt File and save it to decrypted filePath
-function saveDecryptedFile(buffer, filePath, key, iv) {
-  const decrypted = decrypt(CryptoAlgorithm, buffer, key, iv);
-
-  filePath = getEncryptedFilePath(filePath);
-  if (!fs.existsSync(path.dirname(filePath))) {
-    fs.mkdirSync(path.dirname(filePath));
-  }
-
-  fs.writeFileSync(filePath, decrypted);
-}
+  const input = fs.createReadStream(path.join("uploads/", src));
+  const output = fs.createWriteStream(path.join("downloads/", dest));
+  input.pipe(decipher).pipe(output);
+  output.on("finish", function () {
+    console.log("Encrypted file written to disk!");
+  });
+};
 
 const checkDatabase = async () => {
   database = await DataModel.find();
-  database.map((data) => {
-    var diff = Date.now() - data.uploaddate;
-    diff = diff > 0 ? diff : 0;
-    diff = diff / 1000;
-
-    if (data.burnflag == true) {
-      if (data.visitflag == true || diff > MONTH) {
-        //Burn if once visited
-        fs.unlinkSync("uploads/" + data.filename);
-        fs.unlinkSync("downloads/" + data.filename);
-        data.delete();
+  await Promise.all(
+    database.map(async (data, index) => {
+      var diff = Date.now() - data.uploaddate;
+      diff = diff > 0 ? diff : 0;
+      diff = diff / 1000;
+      if (data.burnflag == true) {
+        if (data.visitflag == true || diff > MONTH) {
+          //Burn if once visited
+          if (data.filename) {
+            if (fs.existsSync("uploads/" + data.filename))
+              fs.unlinkSync("uploads/" + data.filename);
+            if (fs.existsSync("downloads/" + data.filename))
+              fs.unlinkSync("downloads/" + data.filename);
+          }
+          await DataModel.findByIdAndDelete(data._id);
+        }
+      } else if (expiretime[data.expire] < diff) {
+        //expire time is over
+        if (data.filename) {
+          if (fs.existsSync("uploads/" + data.filename))
+            fs.unlinkSync("uploads/" + data.filename);
+          if (fs.existsSync("downloads/" + data.filename))
+            fs.unlinkSync("downloads/" + data.filename);
+        }
+        await DataModel.findByIdAndDelete(data._id);
       }
-    } else if (expiretime[data.expire] < diff) {
-      //expire time is over
-      fs.unlinkSync("uploads/" + data.filename);
-      fs.unlinkSync("downloads/" + data.filename);
-      data.delete();
-    }
-  });
+    })
+  );
 };
 
 const dataMain = async (req, res) => {
   //hash is once, and secpass is twice hased string with space
   const hash = crypto.createHash("sha256", sec).update("").digest("hex");
   const secpass = crypto.createHash("sha256", sec).update(hash).digest("hex");
-
   uri = Object.keys(req.query)[0];
-  checkDatabase();
+  await checkDatabase();
+
   if (uri == undefined) {
     //Not existing params
     res.render("pages/index");
@@ -103,9 +83,6 @@ const dataMain = async (req, res) => {
       res.render("pages/expired");
     } else {
       //Calculate expire time
-      var diff = Date.now() - result[0].uploaddate;
-      diff = diff > 0 ? diff : 0;
-      diff = diff / 1000;
 
       if (result[0].burnflag && result[0].visitflag) {
         //Burn if once visited
@@ -119,12 +96,9 @@ const dataMain = async (req, res) => {
 
       if (result[0].filename) {
         //if password is correct and file exists, decrypt file and save it to 'downloads' folder in server
-        saveDecryptedFile(
-          fs.readFileSync("uploads/" + result[0].filename),
-          path.join("downloads/", result[0].filename),
-          secret.key,
-          secret.iv
-        );
+        for (var i = 0; i < result[0].filename.length; i++) {
+          await decrypt(result[0].filename[i], result[0].filename[i]);
+        }
       }
       res.render("pages/decrypt", {
         uri: result[0].uri,

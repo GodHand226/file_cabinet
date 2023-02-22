@@ -10,15 +10,19 @@ const { dataUpload } = require("../controllers/dataUpload");
 
 const storage = multer.memoryStorage();
 
-const maxSize = 1 * 1000 * 1000;
+const maxSize = 1 * 100000 * 100000;
 
 const upload = multer({
   storage: storage,
   limits: { fileSize: maxSize },
 
   // mypic is the name of file attribute
-}).single("upload_file");
-
-router.post("/", upload, dataUpload);
+});
+// .array("upload_file")
+router.post(
+  "/",
+  // upload.fields([{ name: "upload_file", maxCount: 10 }]),
+  dataUpload
+);
 
 module.exports = router;

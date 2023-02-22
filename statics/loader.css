@@ -1,0 +1,39 @@
+:root {
+  --color-primary: #c54310;
+  --color-secondary: #2b1357;
+  /* --color-accent: #190b32; */
+}
+
+.loader {
+  width: 100%;
+  max-width: 820px;
+  aspect-ratio: 50/1;
+
+  background: var(--color-accent);
+  position: relative;
+  overflow: hidden;
+}
+.loader::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  /*   width: 100px; */
+  background: var(--color-primary);
+
+  animation: loading 2s linear infinite alternate forwards;
+}
+
+@keyframes loading {
+  0% {
+    left: -100%;
+    right: 100%;
+  }
+  50% {
+    left: 50%;
+    right: 40%;
+  }
+  100% {
+    left: 100%;
+    right: -100%;
+  }
+}

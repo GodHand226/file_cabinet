@@ -1,7 +1,7 @@
 const express = require("express");
 
 const path = require("path");
-
+const busboy = require("connect-busboy");
 const bodyParser = require("body-parser");
 
 const { dataUpload } = require("./controllers/dataUpload");
@@ -9,7 +9,12 @@ const { dataUpload } = require("./controllers/dataUpload");
 const app = express();
 //Add path for downloaded Image Preview
 app.use("/downloads", express.static(path.join(__dirname, "downloads")));
-
+app.use("/statics", express.static(path.join(__dirname, "statics")));
+app.use(
+  busboy({
+    highWaterMark: 2 * 1024 * 1024, // Set 2MiB buffer
+  })
+);
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({

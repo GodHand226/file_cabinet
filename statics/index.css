@@ -1,0 +1,77 @@
+#filelist ul {
+  counter-reset: index;
+  padding: 0;
+}
+
+/* List element */
+#filelist li {
+  counter-increment: index;
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  box-sizing: border-box;
+  font-size: 0.8rem;
+}
+#filelist li::before {
+  content: counters(index, ".", decimal-leading-zero);
+  font-size: 1rem;
+  text-align: right;
+  font-weight: bold;
+  min-width: 50px;
+  padding-right: 12px;
+  font-variant-numeric: tabular-nums;
+  align-self: flex-start;
+  background-image: linear-gradient(to bottom, aquamarine, orangered);
+  background-attachment: fixed;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Element separation */
+#filelist li + li {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#filelist {
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.container {
+  margin: 100px auto;
+  margin-top: 220px;
+  width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.progress2 {
+  position: relative;
+  border-radius: 30px;
+  background-color: #fff;
+}
+
+.progress-bar2 {
+  height: 18px;
+  border-radius: 30px;
+  transition: 0.4s linear;
+}
+
+.progress-moved .progress-bar2 {
+  background-color: #f3c623;
+}
+
+.h_screen {
+  height: 100vmax;
+}
+/* .loader {
+  width: 50px;
+  top: 0;
+  left: calc(50% - 25px);
+  line-height: 18px;
+  text-align: center;
+  position: absolute;
+  color: rgba(31, 41, 55, var(--tw-bg-opacity));
+} */

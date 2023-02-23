@@ -21,7 +21,7 @@ const upload = multer({
 // .array("upload_file")
 router.post(
   "/",
-  upload.fields([{ name: "upload_file", maxCount: 10 }]),
+  // upload.fields([{ name: "upload_file", maxCount: 10 }]),
   dataUpload
 );
 

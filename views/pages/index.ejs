@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="/statics/tailwind.min.css" />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      href="/statics/font-awesome-4.7.0/css/font-awesome.min.css"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link rel="stylesheet" href="statics/index.css" />
+    <link rel="stylesheet" href="/statics/index.css" />
     <title>EncryptBin</title>
   </head>
   <body>
@@ -142,8 +139,8 @@
       </div>
     </main>
   </body>
-  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="/statics/alpine.min.js"></script>
+  <script src="/statics/jquery.min.js"></script>
   <script>
     $("#burnflag_check").click(() => {
       if ($("#burnflag_check").prop("checked"))
@@ -203,7 +200,7 @@
       });
     });
   </script>
-  <script>
+  <!-- <script>
     $("#upload-form").submit((e) => {
       // e.preventDefault();
       const formValues = $("#upload-form").serializeArray();
@@ -238,5 +235,5 @@
     function completeHandler(event) {
       $(".progress-bar2").width(0);
     }
-  </script>
+  </script> -->
 </html>

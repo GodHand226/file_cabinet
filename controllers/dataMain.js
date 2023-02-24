@@ -84,7 +84,7 @@ const dataMain = async (req, res) => {
     } else {
       //Calculate expire time
 
-      if (result[0].burnflag && (result[0].visitflag || diff > MONTH)) {
+      if (result[0].burnflag && result[0].visitflag) {
         //Burn if once visited
         result[0].delete();
         return res.render("pages/expired.ejs");

@@ -63,7 +63,10 @@
   background-color: #f3c623;
 }
 
-.loader {
+.h_screen {
+  height: 100vmax;
+}
+/* .loader {
   width: 50px;
   top: 0;
   left: calc(50% - 25px);
@@ -71,4 +74,4 @@
   text-align: center;
   position: absolute;
   color: rgba(31, 41, 55, var(--tw-bg-opacity));
-}
+} */

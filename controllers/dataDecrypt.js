@@ -27,7 +27,7 @@ const decrypt = (src, dest) => {
   const output = fs.createWriteStream(path.join("downloads/", dest));
   input.pipe(decipher).pipe(output);
   output.on("finish", function () {
-    console.log("Encrypted file written to disk!");
+    // console.log("Encrypted file written to disk!");
   });
 };
 const dataDecrypt = async (req, res) => {

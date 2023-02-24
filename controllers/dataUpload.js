@@ -29,12 +29,15 @@ function RandomString(length) {
   return result;
 }
 
-const dataUpload = async (req, res) => {
-  //hash is Once hased string
-  const hash = crypto.createHash("sha256", sec).update(" ").digest("hex");
+function generateHash(password) {
+  const hash = crypto.createHash("sha256", sec).update(password).digest("hex");
   //secpass is Twice hased string
   const secpass = crypto.createHash("sha256", sec).update(hash).digest("hex");
-
+  return secpass;
+}
+const dataUpload = async (req, res) => {
+  //hash is Once hased string
+  var secpass, title, expire, burnflag;
   var newfilenames = [];
   var origins = [];
 
@@ -51,17 +54,25 @@ const dataUpload = async (req, res) => {
     // Pipe it trough
     file.pipe(cipher).pipe(fstream);
     // On finish of the upload
-    fstream.on("finish", function () {});
+    fstream.on("pipe", function () {
+      console.log("uploading");
+    });
+  });
+  req.busboy.on("field", (name, val, info) => {
+    if (name == "password") secpass = generateHash(val);
+    else if (name == "title") title = val;
+    else if (name == "expire") expire = val;
+    else if (name == "burnflag") burnflag = val;
   });
   req.busboy.on("close", () => {
     const data = new DataModel({
       uri: RandomString(24),
-      title: req.body.title,
+      title: title,
       password: secpass,
       filename: newfilenames,
       originalname: origins,
-      expire: req.body.expire,
-      burnflag: req.body.burnflag,
+      expire: expire,
+      burnflag: burnflag,
       uploaddate: Date.now(),
       visitflag: false,
     });
@@ -73,7 +84,7 @@ const dataUpload = async (req, res) => {
 
     res.render("pages/preview", {
       uri: data.uri,
-      title: req.body.title,
+      title: title,
       password: secpass,
     });
   });

@@ -7,6 +7,7 @@
       href="/statics/font-awesome-4.7.0/css/font-awesome.min.css"
     />
     <link rel="stylesheet" href="/statics/index.css" />
+    <link rel="stylesheet" href="/statics/loader.css" />
     <title>EncryptBin</title>
   </head>
   <body>
@@ -127,10 +128,11 @@
                       class="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700"
                     />
                   </div>
-                  <div class="progress2 progress-moved">
+                  <!-- <div class="progress2 progress-moved">
                     <div class="progress-bar2" style="width: 0"></div>
                     <div id="percentage" class="loader"></div>
-                  </div>
+                  </div> -->
+                  <div class="loader" style="display: none"></div>
                 </form>
               </div>
             </div>
@@ -200,29 +202,31 @@
       });
     });
   </script>
-  <!-- <script>
+  <script>
     $("#upload-form").submit((e) => {
       // e.preventDefault();
-      const formValues = $("#upload-form").serializeArray();
+      // const formValues = $("#upload-form").serializeArray();
 
-      var files = document.getElementById("upload_file").files;
-      var formdata = new FormData();
+      // var files = document.getElementById("upload_file").files;
+      // var formdata = new FormData();
 
-      for (var index = 0; index < files.length; index++) {
-        formdata.append("upload_file", files[index]);
-      }
+      // for (var index = 0; index < files.length; index++) {
+      //   formdata.append("upload_file", files[index]);
+      // }
 
-      formValues.map((data) => {
-        formdata.append(data.name, data.value);
-      });
+      // formValues.map((data) => {
+      //   formdata.append(data.name, data.value);
+      // });
 
-      var ajax = new XMLHttpRequest();
-      ajax.upload.addEventListener("progress", progressHandler, false);
-      ajax.addEventListener("load", completeHandler, false);
-      // ajax.addEventListener("error", errorHandler, false);
-      // ajax.addEventListener("abort", abortHandler, false);
-      ajax.open("POST", "/upload");
-      ajax.send(formdata);
+      // var ajax = new XMLHttpRequest();
+      // ajax.upload.addEventListener("progress", progressHandler, false);
+      // ajax.addEventListener("load", completeHandler, false);
+      // // ajax.addEventListener("error", errorHandler, false);
+      // // ajax.addEventListener("abort", abortHandler, false);
+      // ajax.open("POST", "/upload");
+      // ajax.send(formdata);
+
+      $(".loader").show();
     });
 
     function progressHandler(event) {
@@ -233,7 +237,7 @@
     }
 
     function completeHandler(event) {
-      $(".progress-bar2").width(0);
+      $(".progress-bar2").width("100%");
     }
-  </script> -->
+  </script>
 </html>

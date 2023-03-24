@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/statics/tailwind.min.css" />
+    <script src="/statics/alpine.min.js"></script>
+    <script src="/statics/jquery.min.js"></script>
+    <script src="/statics/preview.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="/statics/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -32,6 +33,7 @@
         copyText = window.location.host + copyText;
         // Copy the text inside the text field
         navigator.clipboard.writeText(copyText);
+        alert("Copied to Clipboard");
       }
     </script>
     <main>
@@ -58,13 +60,9 @@
                       ><%= uri%></a
                     >
                     <button
-                      id="copytoclipboard"
+                      id="copy"
+                      data-clipboard-text="hi"
                       onclick="Oncopytoclipboard()"
-                      data-toggle="tooltip"
-                      data-placement="bottom"
-                      data-original-title="Copied to Clipboard"
-                      data-content="Copied to Clipboard"
-                      aria-describedby="tooltip"
                     >
                       <i class="fa fa-solid fa-clipboard"></i>
                     </button>

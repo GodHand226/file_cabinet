@@ -37,11 +37,10 @@ const dataUpload = async (req, res) => {
   var secpass, title, expire, burnflag;
   var newfilenames = [];
   var origins = [];
-
-  req.pipe(req.busboy);
-  if (req.busboy.file) {
+  if (req.busboy) {
     req.busboy.on("file", (fieldname, file, { filename }) => {
-      const ext = path.extname(filename);
+      let ext;
+      if (filename) ext = path.extname(filename);
       origins.push(filename);
       newfilename = RandomString(10) + "-" + Date.now() + ext;
       newfilenames.push(newfilename);
@@ -59,38 +58,45 @@ const dataUpload = async (req, res) => {
       fstream.on("pipe", function () {
         console.log("uploading");
       });
+      file.on("error", function (err) {
+        console.log(err);
+      });
+    });
+    req.busboy.on("field", (name, val, info) => {
+      if (name == "password") secpass = generateHash(val);
+      else if (name == "title") title = val;
+      else if (name == "expire") expire = val;
+      else if (name == "burnflag") burnflag = val;
+    });
+    req.busboy.on("error", (err) => {
+      console.log(err);
+    });
+    req.busboy.on("close", () => {
+      const data = new DataModel({
+        uri: RandomString(24),
+        title: title,
+        password: secpass,
+        filename: newfilenames,
+        originalname: origins,
+        expire: expire,
+        burnflag: burnflag,
+        uploaddate: Date.now(),
+        visitflag: false,
+      });
+      try {
+        data.save();
+      } catch (error) {
+        res.send(error);
+      }
+
+      res.render("pages/preview", {
+        uri: data.uri,
+        title: title,
+        password: secpass,
+      });
     });
   }
-  req.busboy.on("field", (name, val, info) => {
-    if (name == "password") secpass = generateHash(val);
-    else if (name == "title") title = val;
-    else if (name == "expire") expire = val;
-    else if (name == "burnflag") burnflag = val;
-  });
-  req.busboy.on("close", () => {
-    const data = new DataModel({
-      uri: RandomString(24),
-      title: title,
-      password: secpass,
-      filename: newfilenames,
-      originalname: origins,
-      expire: expire,
-      burnflag: burnflag,
-      uploaddate: Date.now(),
-      visitflag: false,
-    });
-    try {
-      data.save();
-    } catch (error) {
-      res.send(error);
-    }
-
-    res.render("pages/preview", {
-      uri: data.uri,
-      title: title,
-      password: secpass,
-    });
-  });
+  req.pipe(req.busboy);
 };
 module.exports = {
   dataUpload,

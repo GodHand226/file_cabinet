@@ -27,6 +27,12 @@
         }
         return result;
       }
+      function Oncopytoclipboard() {
+        var copyText = $("#copy_url").attr("href");
+        copyText = window.location.host + copyText;
+        // Copy the text inside the text field
+        navigator.clipboard.writeText(copyText);
+      }
     </script>
     <main>
       <div align="center" class="py-20 h-screen bg-gray-800 px-2">
@@ -46,10 +52,22 @@
                   <span class="text-lg">URL:</span><br />
                   <div>
                     <a
-                      href="http://localhost:3000/?<%= uri%>"
+                      href="/?<%= uri%>"
+                      id="copy_url"
                       class="text-lg text-center h-12 px-3 w-full border-gray-200 border rounded focus:outline-none focus:border-gray-300"
-                      >localhost:3000/?<%= uri%></a
+                      ><%= uri%></a
                     >
+                    <button
+                      id="copytoclipboard"
+                      onclick="Oncopytoclipboard()"
+                      data-toggle="tooltip"
+                      data-placement="bottom"
+                      data-original-title="Copied to Clipboard"
+                      data-content="Copied to Clipboard"
+                      aria-describedby="tooltip"
+                    >
+                      <i class="fa fa-solid fa-clipboard"></i>
+                    </button>
                   </div>
                 </div>
 

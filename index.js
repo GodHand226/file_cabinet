@@ -3,7 +3,6 @@ const express = require("express");
 const path = require("path");
 const busboy = require("connect-busboy");
 const bodyParser = require("body-parser");
-
 const { dataUpload } = require("./controllers/dataUpload");
 
 const app = express();
@@ -21,7 +20,9 @@ app.use(
     extended: true,
   })
 );
-const port = 3000;
+
+require("dotenv").config();
+const port = process.env.PORT;
 
 const upload = require("./routers/upload");
 const main = require("./routers/main");

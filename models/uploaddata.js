@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-
-const uri = "mongodb://localhost:27017/FileCabinet";
+require("dotenv").config();
+const uri = process.env.DB_URL;
 mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true });
 const connection = mongoose.connection;
 

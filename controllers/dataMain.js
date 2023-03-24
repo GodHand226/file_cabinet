@@ -1,5 +1,3 @@
-const { UserInfo } = require("git");
-
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
@@ -8,16 +6,7 @@ const DataModel = require("../models/uploaddata");
 const { expiretime } = require("../constant");
 const { secret_key } = require("../constant");
 const { MONTH } = require("../constant");
-//hash key
-const sec = secret_key;
-//Secret Key used in File Decrypt
-const secret = {
-  iv: Buffer.from("8e800da9971a12010e738df5fdfe0bb7", "hex"),
-  key: Buffer.from(
-    "dfebb958a1687ed42bf67166200e6bac5f8b050fc2f6552d0737cefe483d3f1c",
-    "hex"
-  ),
-};
+const { secret } = require("../constant");
 
 const decrypt = (src, dest) => {
   const initVect = crypto.randomBytes(16);
@@ -44,21 +33,25 @@ const checkDatabase = async () => {
       if (data.burnflag == true) {
         if (data.visitflag == true || diff > MONTH) {
           //Burn if once visited
-          if (data.filename) {
-            if (fs.existsSync("uploads/" + data.filename))
-              fs.unlinkSync("uploads/" + data.filename);
-            if (fs.existsSync("downloads/" + data.filename))
-              fs.unlinkSync("downloads/" + data.filename);
+          if (data.filename.length > 0) {
+            data.filename.map((name) => {
+              if (fs.existsSync("uploads/" + name))
+                fs.unlinkSync("uploads/" + name);
+              if (fs.existsSync("downloads/" + name))
+                fs.unlinkSync("downloads/" + name);
+            });
           }
           await DataModel.findByIdAndDelete(data._id);
         }
       } else if (expiretime[data.expire] < diff) {
         //expire time is over
-        if (data.filename) {
-          if (fs.existsSync("uploads/" + data.filename))
-            fs.unlinkSync("uploads/" + data.filename);
-          if (fs.existsSync("downloads/" + data.filename))
-            fs.unlinkSync("downloads/" + data.filename);
+        if (data.filename.length > 0) {
+          data.filename.map((name) => {
+            if (fs.existsSync("uploads/" + name))
+              fs.unlinkSync("uploads/" + name);
+            if (fs.existsSync("downloads/" + name))
+              fs.unlinkSync("downloads/" + name);
+          });
         }
         await DataModel.findByIdAndDelete(data._id);
       }
@@ -68,8 +61,11 @@ const checkDatabase = async () => {
 
 const dataMain = async (req, res) => {
   //hash is once, and secpass is twice hased string with space
-  const hash = crypto.createHash("sha256", sec).update("").digest("hex");
-  const secpass = crypto.createHash("sha256", sec).update(hash).digest("hex");
+  const hash = crypto.createHash("sha256", secret_key).update("").digest("hex");
+  const secpass = crypto
+    .createHash("sha256", secret_key)
+    .update(hash)
+    .digest("hex");
   uri = Object.keys(req.query)[0];
   await checkDatabase();
 

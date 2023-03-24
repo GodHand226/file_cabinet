@@ -1,23 +1,14 @@
-const { UserInfo, FileIndex } = require("git");
-
 const DataModel = require("../models/uploaddata");
 const path = require("path");
 const fs = require("fs-extra");
 const stream = require("stream");
 const crypto = require("crypto");
-
-const sec = "SecretWorld";
+const { secret_key } = require("../constant");
+const { secret } = require("../constant");
 
 const characters =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 //Secret Key used in File Decrypt
-const secret = {
-  iv: Buffer.from("8e800da9971a12010e738df5fdfe0bb7", "hex"),
-  key: Buffer.from(
-    "dfebb958a1687ed42bf67166200e6bac5f8b050fc2f6552d0737cefe483d3f1c",
-    "hex"
-  ),
-};
 
 function RandomString(length) {
   let result = "";
@@ -30,9 +21,15 @@ function RandomString(length) {
 }
 
 function generateHash(password) {
-  const hash = crypto.createHash("sha256", sec).update(password).digest("hex");
+  const hash = crypto
+    .createHash("sha256", secret_key)
+    .update(password)
+    .digest("hex");
   //secpass is Twice hased string
-  const secpass = crypto.createHash("sha256", sec).update(hash).digest("hex");
+  const secpass = crypto
+    .createHash("sha256", secret_key)
+    .update(hash)
+    .digest("hex");
   return secpass;
 }
 const dataUpload = async (req, res) => {
@@ -42,22 +39,28 @@ const dataUpload = async (req, res) => {
   var origins = [];
 
   req.pipe(req.busboy);
-  req.busboy.on("file", (fieldname, file, { filename }) => {
-    const ext = path.extname(filename);
-    origins.push(filename);
-    newfilename = RandomString(10) + "-" + Date.now() + ext;
-    newfilenames.push(newfilename);
-    // Create a write stream of the new file
-    const cipher = crypto.createCipheriv("aes-256-cbc", secret.key, secret.iv);
+  if (req.busboy.file) {
+    req.busboy.on("file", (fieldname, file, { filename }) => {
+      const ext = path.extname(filename);
+      origins.push(filename);
+      newfilename = RandomString(10) + "-" + Date.now() + ext;
+      newfilenames.push(newfilename);
+      // Create a write stream of the new file
+      const cipher = crypto.createCipheriv(
+        "aes-256-cbc",
+        secret.key,
+        secret.iv
+      );
 
-    const fstream = fs.createWriteStream(path.join("uploads/", newfilename));
-    // Pipe it trough
-    file.pipe(cipher).pipe(fstream);
-    // On finish of the upload
-    fstream.on("pipe", function () {
-      console.log("uploading");
+      const fstream = fs.createWriteStream(path.join("uploads/", newfilename));
+      // Pipe it trough
+      file.pipe(cipher).pipe(fstream);
+      // On finish of the upload
+      fstream.on("pipe", function () {
+        console.log("uploading");
+      });
     });
-  });
+  }
   req.busboy.on("field", (name, val, info) => {
     if (name == "password") secpass = generateHash(val);
     else if (name == "title") title = val;

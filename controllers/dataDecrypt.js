@@ -1,20 +1,10 @@
-const { UserInfo } = require("git");
 const fs = require("fs");
 const path = require("path");
 const stream = require("stream");
 const crypto = require("crypto");
 const { secret_key } = require("../constant");
+const { secret } = require("../constant");
 const DataModel = require("../models/uploaddata");
-
-const sec = secret_key;
-//Secret Key used in File Decrypt
-const secret = {
-  iv: Buffer.from("8e800da9971a12010e738df5fdfe0bb7", "hex"),
-  key: Buffer.from(
-    "dfebb958a1687ed42bf67166200e6bac5f8b050fc2f6552d0737cefe483d3f1c",
-    "hex"
-  ),
-};
 
 const decrypt = (src, dest) => {
   const initVect = crypto.randomBytes(16);
@@ -34,11 +24,14 @@ const dataDecrypt = async (req, res) => {
   uri = req.body.uri;
   //hash is Once hased string
   const hash = crypto
-    .createHash("sha256", sec)
+    .createHash("sha256", secret_key)
     .update(req.body.password)
     .digest("hex");
   //secpass is Twice hased string
-  const secpass = crypto.createHash("sha256", sec).update(hash).digest("hex");
+  const secpass = crypto
+    .createHash("sha256", secret_key)
+    .update(hash)
+    .digest("hex");
 
   result = await DataModel.find({ uri });
 

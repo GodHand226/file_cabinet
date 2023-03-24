@@ -7,6 +7,13 @@ const YEAR = DAY * 365;
 
 const secret_key = "d1a3b9fe4c3f9aa4b0fb5be8e08809b2";
 
+const secret = {
+  iv: Buffer.from("8e800da9971a12010e738df5fdfe0bb7", "hex"),
+  key: Buffer.from(
+    "dfebb958a1687ed42bf67166200e6bac5f8b050fc2f6552d0737cefe483d3f1c",
+    "hex"
+  ),
+};
 const expiretime = {
   "5 minutes": 5 * MIN,
   "10 minutes": 10 * MIN,
@@ -21,4 +28,5 @@ module.exports = {
   expiretime,
   MONTH,
   secret_key,
+  secret,
 };

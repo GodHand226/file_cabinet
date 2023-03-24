@@ -3,10 +3,9 @@ Transferring files and texts with encryption
 
 ## Tech Stacks
 <ul>
-<li>NodeJS</li>
+<li>NodeJS(v16.15.0)</li>
 <li>ExpressJS</li>
 <li>MongoDB</li>
-<li>Ejs</li>
 </ul>
 
 ## How to install on server

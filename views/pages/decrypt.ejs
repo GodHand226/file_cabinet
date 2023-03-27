@@ -82,7 +82,11 @@
                     <div class="wrapper">
                       <section class="horizontal-slider">
                         <% for (var i=0; i<filename.length;i++) { %>
-                          <div class="cards"> <a data-fancybox="group" href="downloads/<%= filename[i]%>"><img src="downloads/<%= filename[i]%>" alt="<%= filename[i]%>"/></a> </div>
+                          <% if(filename[i].endsWith("jpg") || filename[i].endsWith("png")) {%>
+                            <div class="cards"> <a data-fancybox="group" href="downloads/<%= filename[i]%>"><img src="downloads/<%= filename[i]%>" alt="<%= filename[i]%>"/></a> </div>
+                          <% }else if(!filename[i].endsWith("undefined")){ %>
+                          <div class="cards"> <a data-fancybox="group" href="downloads/<%= filename[i]%>"><span><i class="fa fa-file"></i><%= filename[i]%></span></div>
+                          <% } %>
                         <% } %>
                       </section>
                     </div>

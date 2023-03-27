@@ -6,6 +6,11 @@
     <script src="/statics/jquery.min.js"></script>
     <script src="/statics/preview.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js"></script>
     <script src="/statics/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
     <link
@@ -33,7 +38,6 @@
         copyText = window.location.host + copyText;
         // Copy the text inside the text field
         navigator.clipboard.writeText(copyText);
-        alert("Copied to Clipboard");
       }
     </script>
     <main>
@@ -61,11 +65,21 @@
                     >
                     <button
                       id="copy"
-                      data-clipboard-text="hi"
                       onclick="Oncopytoclipboard()"
+                      data-tooltip-target="tooltip-click"
+                      data-tooltip-trigger="click"
+                      type="button"
                     >
                       <i class="fa fa-solid fa-clipboard"></i>
                     </button>
+                    <div
+                      id="tooltip-click"
+                      role="tooltip"
+                      class="absolute z-10 inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                      Copied
+                      <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                   </div>
                 </div>
 

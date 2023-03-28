@@ -42,7 +42,11 @@ const dataDecrypt = async (req, res) => {
     if (result[0].filename) {
       //if password is correct and file exists, decrypt file and save it to 'downloads' folder in server
       for (var i = 0; i < result[0].filename.length; i++) {
-        await decrypt(result[0].filename[i], result[0].filename[i]);
+        try {
+          await decrypt(result[0].filename[i], result[0].filename[i]);
+        } catch (e) {
+          res.render("pages/error", { error: e });
+        }
       }
     }
     res.render("pages/decrypt", {

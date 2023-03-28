@@ -85,7 +85,7 @@
                           <% if(filename[i].endsWith("jpg") || filename[i].endsWith("png")) {%>
                             <div class="cards"> <a data-fancybox="group" href="downloads/<%= filename[i]%>"><img src="downloads/<%= filename[i]%>" alt="<%= filename[i]%>"/></a> </div>
                           <% }else if(!filename[i].endsWith("undefined")){ %>
-                          <div class="cards"> <a data-fancybox="group" href="downloads/<%= filename[i]%>"><span><i class="fa fa-file"></i><%= filename[i]%></span></div>
+                            <div class="cards"> <a data-fancybox="group" href="downloads/<%= filename[i]%>"><span><i class="fa fa-file"></i><%= filename[i]%></span></a></div>
                           <% } %>
                         <% } %>
                       </section>

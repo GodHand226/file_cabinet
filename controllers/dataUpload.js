@@ -41,7 +41,9 @@ const dataUpload = async (req, res) => {
     if (req.busboy) {
       req.busboy.on("file", (fieldname, file, { filename }) => {
         let ext;
-        if (filename) ext = path.extname(filename);
+        if (filename) {
+          ext = path.extname(filename);
+        }
         origins.push(filename);
         newfilename = RandomString(10) + "-" + Date.now() + ext;
         newfilenames.push(newfilename);
@@ -58,6 +60,7 @@ const dataUpload = async (req, res) => {
         );
         // Pipe it trough
         file.pipe(cipher).pipe(fstream);
+
         // On finish of the upload
         fstream.on("pipe", function () {
           console.log("uploading");

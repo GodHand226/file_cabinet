@@ -37,66 +37,81 @@ const dataUpload = async (req, res) => {
   var secpass, title, expire, burnflag;
   var newfilenames = [];
   var origins = [];
-  if (req.busboy) {
-    req.busboy.on("file", (fieldname, file, { filename }) => {
-      let ext;
-      if (filename) ext = path.extname(filename);
-      origins.push(filename);
-      newfilename = RandomString(10) + "-" + Date.now() + ext;
-      newfilenames.push(newfilename);
-      // Create a write stream of the new file
-      const cipher = crypto.createCipheriv(
-        "aes-256-cbc",
-        secret.key,
-        secret.iv
-      );
+  try {
+    if (req.busboy) {
+      req.busboy.on("file", (fieldname, file, { filename }) => {
+        let ext;
+        if (filename) ext = path.extname(filename);
+        origins.push(filename);
+        newfilename = RandomString(10) + "-" + Date.now() + ext;
+        newfilenames.push(newfilename);
+        // Create a write stream of the new file
+        const cipher = crypto.createCipheriv(
+          "aes-256-cbc",
+          secret.key,
+          secret.iv
+        );
+        if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
+        if (!fs.existsSync("downloads")) fs.mkdirSync("downloads");
+        const fstream = fs.createWriteStream(
+          path.join("uploads/", newfilename)
+        );
+        // Pipe it trough
+        file.pipe(cipher).pipe(fstream);
+        // On finish of the upload
+        fstream.on("pipe", function () {
+          console.log("uploading");
+        });
+        file.on("error", function (err) {
+          res.render("pages/error", {
+            error: err,
+          });
+        });
+      });
+      req.busboy.on("field", (name, val, info) => {
+        if (name == "password") secpass = generateHash(val);
+        else if (name == "title") title = val;
+        else if (name == "expire") expire = val;
+        else if (name == "burnflag") burnflag = val;
+      });
+      req.busboy.on("error", (err) => {
+        res.render("pages/error", {
+          error: err,
+        });
+      });
+      req.busboy.on("close", () => {
+        const data = new DataModel({
+          uri: RandomString(24),
+          title: title,
+          password: secpass,
+          filename: newfilenames,
+          originalname: origins,
+          expire: expire,
+          burnflag: burnflag,
+          uploaddate: Date.now(),
+          visitflag: false,
+        });
+        try {
+          data.save();
+        } catch (error) {
+          res.render("pages/error", {
+            error: error,
+          });
+        }
 
-      const fstream = fs.createWriteStream(path.join("uploads/", newfilename));
-      // Pipe it trough
-      file.pipe(cipher).pipe(fstream);
-      // On finish of the upload
-      fstream.on("pipe", function () {
-        console.log("uploading");
+        res.render("pages/preview", {
+          uri: data.uri,
+          title: title,
+          password: secpass,
+        });
       });
-      file.on("error", function (err) {
-        console.log(err);
-      });
-    });
-    req.busboy.on("field", (name, val, info) => {
-      if (name == "password") secpass = generateHash(val);
-      else if (name == "title") title = val;
-      else if (name == "expire") expire = val;
-      else if (name == "burnflag") burnflag = val;
-    });
-    req.busboy.on("error", (err) => {
-      console.log(err);
-    });
-    req.busboy.on("close", () => {
-      const data = new DataModel({
-        uri: RandomString(24),
-        title: title,
-        password: secpass,
-        filename: newfilenames,
-        originalname: origins,
-        expire: expire,
-        burnflag: burnflag,
-        uploaddate: Date.now(),
-        visitflag: false,
-      });
-      try {
-        data.save();
-      } catch (error) {
-        res.send(error);
-      }
-
-      res.render("pages/preview", {
-        uri: data.uri,
-        title: title,
-        password: secpass,
-      });
+    }
+    req.pipe(req.busboy);
+  } catch (e) {
+    res.render("pages/error", {
+      error: e,
     });
   }
-  req.pipe(req.busboy);
 };
 module.exports = {
   dataUpload,
